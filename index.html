@@ -118,9 +118,38 @@
        ============================================ */
     .hero {
       position: relative; z-index: 1;
-      display: flex; align-items: center; justify-content: center;
-      padding: clamp(5rem, 10vw, 8rem) clamp(1.5rem, 4vw, 4rem) 2rem;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 4vw, 4rem) 0;
       text-align: center;
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    section {
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+
+    #videos {
+      margin-top: -4rem !important;
+      padding-top: 0 !important;
+    }
+
+    #stats {
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+
+    #videos {
+      margin-top: -3rem;
+      padding-top: 2rem;
+    }
+
+    #stats {
+      padding-top: 1.5rem !important;
+      padding-bottom: 2rem;
     }
 
     .hero-inner { max-width: 900px; }
