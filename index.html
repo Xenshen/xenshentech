@@ -740,36 +740,74 @@
 
     // === Featured Videos (placeholder) ===
     const videos = [
-      { title: 'Building a Full-Stack App from Scratch', views: '12K views', date: '2 weeks ago', badge: 'Tutorial' },
-      { title: 'The Future of AI: What to Expect in 2026', views: '8.5K views', date: '1 month ago', badge: 'Deep Dive' },
-      { title: 'Top 10 Developer Tools You Need to Know', views: '15K views', date: '1 month ago', badge: 'List' },
-      { title: 'Understanding WebAssembly in 2026', views: '6.2K views', date: '2 months ago', badge: 'Explainer' },
-      { title: 'Why I Switched to This New Framework', views: '20K views', date: '3 months ago', badge: 'Review' },
-      { title: 'DevOps Basics for Beginners', views: '9.1K views', date: '3 months ago', badge: 'Tutorial' },
+      { id: 'h_pasnaegI4', title: 'Featured Video on Xenshen Tech', views: 'YouTube', date: '@xenshentech', badge: 'Latest' },
+      { id: '8QezxrLMxHs', title: 'Another Featured Video', views: 'YouTube', date: '@xenshentech', badge: 'Featured' },
+      { id: '87VfOaWliMs', title: 'Third Featured Video', views: 'YouTube', date: '@xenshentech', badge: 'Popular' },
+      { id: 'FfptQF06pDQ', title: 'Fourth Featured Video', views: 'YouTube', date: '@xenshentech', badge: 'Recent' },
+      { id: '47YkQ9E706s', title: 'Fifth Featured Video', views: 'YouTube', date: '@xenshentech', badge: 'New' },
+      { id: 'WioI7Vp3YXI', title: 'Sixth Featured Video', views: 'YouTube', date: '@xenshentech', badge: 'New' },
     ];
 
     const grid = document.getElementById('videos-grid');
     videos.forEach(v => {
-      grid.innerHTML += `
-        <div class="video-card">
-          <div class="video-thumb">
-            <div class="video-thumb-placeholder">
-              <div class="play-icon">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      if (v.id) {
+        grid.innerHTML += `
+          <div class="video-card">
+            <div class="video-thumb">
+              <iframe src="https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1"
+                title="${v.title}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+              <span class="video-badge">${v.badge}</span>
+            </div>
+            <div class="video-info">
+              <div class="video-title">${v.title}</div>
+              <div class="video-meta">
+                <span>${v.views}</span><span>&middot;</span><span>${v.date}</span>
               </div>
             </div>
-            <span class="video-badge">${v.badge}</span>
-          </div>
-          <div class="video-info">
-            <div class="video-title">${v.title}</div>
-            <div class="video-meta">
-              <span>${v.views}</span><span>&middot;</span><span>${v.date}</span>
+          </div>`;
+      } else if (v.link) {
+        grid.innerHTML += `
+          <a href="https://www.youtube.com/@xenshentech/videos" target="_blank" class="video-card">
+            <div class="video-thumb" style="display:grid;place-items:center;">
+              <div class="play-icon" style="width:64px;height:64px;">
+                <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="video-badge">${v.badge}</span>
             </div>
-          </div>
-        </div>`;
+            <div class="video-info">
+              <div class="video-title">${v.title}</div>
+              <div class="video-meta">
+                <span>${v.views}</span><span>&middot;</span><span>${v.date}</span>
+              </div>
+            </div>
+          </a>`;
+      } else {
+        grid.innerHTML += `
+          <div class="video-card">
+            <div class="video-thumb">
+              <div class="video-thumb-placeholder">
+                <div class="play-icon">
+                  <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <span class="video-badge">${v.badge}</span>
+            </div>
+            <div class="video-info">
+              <div class="video-title">${v.title}</div>
+              <div class="video-meta">
+                <span>${v.views}</span><span>&middot;</span><span>${v.date}</span>
+              </div>
+            </div>
+          </div>`;
+      }
     });
 
-    // === Services ===
+    // Click on non-embedded video cards -> YouTube
+    document.querySelectorAll('.video-card:not([href])').forEach(card => {
+      card.addEventListener('click', () => {
+        window.open('https://www.youtube.com/@xenshentech/videos', '_blank');
+      });
+    });
     const services = [
       {
         icon: '&#x1F528;',
