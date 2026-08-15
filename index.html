@@ -322,9 +322,11 @@
     .video-card:hover { border-color: rgba(0,240,255,.25); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.4), var(--glow-cyan); }
 
     .video-thumb {
-      position: relative; padding-top: 56.25%; background: var(--bg-secondary); overflow: hidden;
+      position: relative; width: 100%; padding-top: 56.25%; background: var(--bg-secondary); overflow: hidden;
     }
-    .video-thumb iframe { position: absolute; inset: 0; border: none; }
+    .video-thumb iframe {
+      position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; border: none;
+    }
     .video-thumb-placeholder {
       position: absolute; inset: 0; display: grid; place-items: center;
       background: linear-gradient(135deg, rgba(0,240,255,.06), rgba(74,122,255,.06));
