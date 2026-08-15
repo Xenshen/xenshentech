@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xenshen Tech — Exploring the Future of Technology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       CSS RESET & BASE
+       ============================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #16161f;
+      --bg-card-hover: #1c1c28;
+      --text-primary: #e8e8ef;
+      --text-secondary: #9090a0;
+      --text-muted: #5a5a6e;
+      --neon-cyan: #00f0ff;
+      --neon-blue: #4a7aff;
+      --neon-purple: #8b5cf6;
+      --neon-pink: #ec4899;
+      --glow-cyan: 0 0 20px rgba(0, 240, 255, .3), 0 0 60px rgba(0, 240, 255, .1);
+      --glow-blue: 0 0 20px rgba(74, 122, 255, .3), 0 0 60px rgba(74, 122, 255, .1);
+      --border-subtle: rgba(255, 255, 255, .06);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ============================================
+       CANVAS BACKGROUND
+       ============================================ */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+
+    /* ============================================
+       NAVIGATION
+       ============================================ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1.5rem, 4vw, 4rem);
+      height: 72px;
+      background: rgba(10, 10, 15, .7);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background .3s;
+    }
+    .nav.scrolled { background: rgba(10, 10, 15, .92); }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: .6rem;
+      font-weight: 800; font-size: 1.3rem; letter-spacing: -.02em;
+    }
+    .nav-logo .logo-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+      display: grid; place-items: center; font-size: .85rem; font-weight: 900;
+      color: var(--bg-primary); box-shadow: var(--glow-cyan);
+    }
+    .nav-logo .logo-text .highlight {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      font-size: .875rem; font-weight: 500; color: var(--text-secondary);
+      transition: color .2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px; background: var(--neon-cyan); border-radius: 2px;
+      transform: scaleX(0); transition: transform .3s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-cta {
+      padding: .5rem 1.2rem !important; border-radius: var(--radius-sm) !important;
+      background: linear-gradient(135deg, rgba(0,240,255,.12), rgba(74,122,255,.12)) !important;
+      border: 1px solid rgba(0,240,255,.2) !important;
+      color: var(--neon-cyan) !important; font-weight: 600 !important;
+      transition: all .3s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      box-shadow: var(--glow-cyan) !important;
+      background: linear-gradient(135deg, rgba(0,240,255,.2), rgba(74,122,255,.2)) !important;
+    }
+
+    .mobile-toggle { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+    .mobile-toggle svg { width: 24px; height: 24px; }
+
+    /* ============================================
+       HERO SECTION
+       ============================================ */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: clamp(6rem, 12vw, 10rem) clamp(1.5rem, 4vw, 4rem) 4rem;
+      text-align: center;
+    }
+
+    .hero-inner { max-width: 900px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .4rem 1rem; border-radius: 100px;
+      background: rgba(0,240,255,.07); border: 1px solid rgba(0,240,255,.15);
+      font-size: .8rem; font-weight: 500; color: var(--neon-cyan);
+      margin-bottom: 2rem;
+      animation: fadeUp .8s ease both;
+    }
+    .hero-badge .pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--neon-cyan);
+      animation: pulse 2s ease infinite; box-shadow: var(--glow-cyan);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(1.5); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900; line-height: 1.05; letter-spacing: -.04em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp .8s ease .1s both;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue) 40%, var(--neon-purple) 70%, var(--neon-pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-secondary); max-width: 600px; margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      animation: fadeUp .8s ease .2s both;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp .8s ease .3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .85rem 1.8rem; border-radius: var(--radius-md);
+      font-weight: 600; font-size: .95rem; cursor: pointer;
+      transition: all .3s; border: none; font-family: inherit;
+    }
+    .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+      color: var(--bg-primary); box-shadow: 0 4px 24px rgba(0,240,255,.25);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,240,255,.35), var(--glow-cyan);
+    }
+
+    .btn-outline {
+      background: transparent; color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-outline:hover {
+      border-color: rgba(0,240,255,.3);
+      background: rgba(0,240,255,.05);
+      transform: translateY(-2px);
+    }
+
+    /* Hero visual / mockup */
+    .hero-visual {
+      margin-top: 4rem; position: relative;
+      animation: fadeUp .8s ease .4s both;
+    }
+    .hero-mockup {
+      width: min(90%, 720px); margin: 0 auto; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .mockup-bar {
+      display: flex; align-items: center; gap: 8px; padding: 14px 16px;
+      background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle);
+    }
+    .mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .mockup-dot:nth-child(1) { background: #ff5f57; }
+    .mockup-dot:nth-child(2) { background: #febc2e; }
+    .mockup-dot:nth-child(3) { background: #28c840; }
+    .mockup-body { padding: 2rem; display: grid; gap: 1rem; }
+    .mockup-row {
+      height: 64px; border-radius: var(--radius-sm);
+      background: linear-gradient(90deg, rgba(0,240,255,.04), rgba(74,122,255,.04));
+      display: flex; align-items: center; padding: 0 1.2rem; gap: .8rem;
+      border: 1px solid var(--border-subtle);
+    }
+    .mockup-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)); flex-shrink: 0; }
+    .mockup-lines { flex: 1; display: grid; gap: .4rem; }
+    .mockup-line { height: 10px; border-radius: 4px; background: rgba(255,255,255,.06); }
+    .mockup-line:nth-child(1) { width: 70%; }
+    .mockup-line:nth-child(2) { width: 50%; }
+    .hero-glow {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 120%; height: 80%; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(0,240,255,.08) 0%, transparent 70%);
+    }
+
+    /* ============================================
+       SECTION SHARED
+       ============================================ */
+    section { position: relative; z-index: 1; padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 4vw, 4rem); }
+
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 500;
+      color: var(--neon-cyan); text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 1rem;
+    }
+    .section-label::before, .section-label::after {
+      content: ''; width: 24px; height: 1px; background: var(--neon-cyan); opacity: .4;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -.03em;
+      line-height: 1.15; margin-bottom: 1rem;
+    }
+
+    .section-desc { color: var(--text-secondary); max-width: 560px; margin: 0 auto; font-size: 1.05rem; }
+
+    /* ============================================
+       STATS SECTION
+       ============================================ */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 3rem auto 0; }
+
+    .stat-card {
+      text-align: center; padding: 2rem 1.5rem; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      transition: all .3s;
+    }
+    .stat-card:hover { border-color: rgba(0,240,255,.2); transform: translateY(-4px); box-shadow: var(--glow-cyan); }
+    .stat-number {
+      font-size: 2.5rem; font-weight: 900; letter-spacing: -.03em;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: .85rem; color: var(--text-muted); margin-top: .3rem; font-weight: 500; }
+
+    /* ============================================
+       FEATURED VIDEOS
+       ============================================ */
+    .videos-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .video-card {
+      border-radius: var(--radius-lg); background: var(--bg-card);
+      border: 1px solid var(--border-subtle); overflow: hidden;
+      transition: all .4s; cursor: pointer;
+    }
+    .video-card:hover { border-color: rgba(0,240,255,.25); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.4), var(--glow-cyan); }
+
+    .video-thumb {
+      position: relative; padding-top: 56.25%; background: var(--bg-secondary); overflow: hidden;
+    }
+    .video-thumb iframe { position: absolute; inset: 0; border: none; }
+    .video-thumb-placeholder {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(0,240,255,.06), rgba(74,122,255,.06));
+    }
+    .play-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(0,240,255,.9); display: grid; place-items: center;
+      box-shadow: var(--glow-cyan); transition: transform .3s;
+    }
+    .video-card:hover .play-icon { transform: scale(1.1); }
+    .play-icon svg { width: 24px; height: 24px; color: var(--bg-primary); margin-left: 3px; }
+
+    .video-badge {
+      position: absolute; top: 10px; right: 10px; padding: .25rem .6rem; border-radius: 6px;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(8px); font-size: .7rem; font-weight: 600;
+      color: var(--neon-cyan); border: 1px solid rgba(0,240,255,.2);
+    }
+
+    .video-info { padding: 1.2rem; }
+    .video-title { font-weight: 700; font-size: .95rem; margin-bottom: .5rem; line-height: 1.4; }
+    .video-meta { display: flex; align-items: center; gap: .8rem; font-size: .8rem; color: var(--text-muted); }
+
+    /* ============================================
+       ABOUT SECTION
+       ============================================ */
+    .about-grid {
+      max-width: 1100px; margin: 0 auto; display: grid;
+      grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center;
+    }
+
+    .about-visual { position: relative; }
+    .about-avatar-wrap {
+      width: min(360px, 80%); margin: 0 auto; aspect-ratio: 1; border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple));
+      display: grid; place-items: center; padding: 4px;
+    }
+    .about-avatar {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: var(--bg-card); display: grid; place-items: center;
+      font-size: 8rem; color: var(--neon-cyan); text-shadow: var(--glow-cyan);
+    }
+
+    .about-text h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .about-text p { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.8; }
+
+    .about-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+    .tag {
+      padding: .35rem .85rem; border-radius: 100px; font-size: .78rem; font-weight: 500;
+      background: rgba(0,240,255,.06); border: 1px solid rgba(0,240,255,.12);
+      color: var(--neon-cyan); transition: all .3s;
+    }
+    .tag:hover { background: rgba(0,240,255,.12); border-color: rgba(0,240,255,.25); }
+
+    /* ============================================
+       SERVICES SECTION
+       ============================================ */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+
+    .service-card {
+      padding: 2.5rem 2rem; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      transition: all .4s; cursor: default; position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-blue));
+      transform: scaleX(0); transition: transform .4s; transform-origin: left;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover { border-color: rgba(0,240,255,.2); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.3), var(--glow-cyan); }
+
+    .service-icon-wrap {
+      width: 56px; height: 56px; border-radius: var(--radius-md); margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, rgba(0,240,255,.1), rgba(74,122,255,.1));
+      border: 1px solid rgba(0,240,255,.15); display: grid; place-items: center;
+      font-size: 1.6rem; transition: all .3s;
+    }
+    .service-card:hover .service-icon-wrap { box-shadow: var(--glow-cyan); transform: scale(1.05); }
+
+    .service-name { font-weight: 700; font-size: 1.15rem; margin-bottom: .6rem; letter-spacing: -.01em; }
+    .service-desc { color: var(--text-secondary); font-size: .9rem; line-height: 1.7; margin-bottom: 1.2rem; }
+
+    .service-features { list-style: none; display: grid; gap: .4rem; }
+    .service-features li {
+      font-size: .82rem; color: var(--text-muted); padding-left: 1.4rem; position: relative; line-height: 1.5;
+    }
+    .service-features li::before {
+      content: '▹'; position: absolute; left: 0; color: var(--neon-cyan); font-weight: 700;
+    }
+
+    /* ============================================
+       CATEGORIES SECTION
+       ============================================ */
+    .categories-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .cat-card {
+      padding: 2rem 1.5rem; border-radius: var(--radius-lg); text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      transition: all .4s; cursor: default;
+    }
+    .cat-card:hover { border-color: rgba(0,240,255,.2); transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+
+    .cat-icon {
+      font-size: 2.5rem; margin-bottom: 1rem; display: block;
+      filter: grayscale(0) brightness(1);
+    }
+    .cat-name { font-weight: 700; font-size: 1.05rem; margin-bottom: .4rem; }
+    .cat-desc { font-size: .82rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ============================================
+       CTA / SUBSCRIBE SECTION
+       ============================================ */
+    .cta-section { text-align: center; }
+
+    .cta-box {
+      max-width: 800px; margin: 0 auto; padding: clamp(3rem, 6vw, 5rem);
+      border-radius: var(--radius-xl); position: relative; overflow: hidden;
+      background: linear-gradient(135deg, rgba(0,240,255,.08), rgba(74,122,255,.08));
+      border: 1px solid rgba(0,240,255,.15);
+    }
+    .cta-box::before {
+      content: ''; position: absolute; inset: -2px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple), var(--neon-pink));
+      border-radius: var(--radius-xl); z-index: -1; opacity: .15; filter: blur(20px);
+    }
+
+    .cta-box h2 { font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; letter-spacing: -.02em; }
+    .cta-box p { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    footer {
+      position: relative; z-index: 1; padding: 3rem clamp(1.5rem, 4vw, 4rem);
+      border-top: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-left { font-size: .85rem; color: var(--text-muted); }
+
+    .footer-socials { display: flex; gap: 1rem; }
+    .footer-socials a {
+      width: 40px; height: 40px; border-radius: var(--radius-sm);
+      display: grid; place-items: center; color: var(--text-muted);
+      border: 1px solid var(--border-subtle); transition: all .3s;
+    }
+    .footer-socials a:hover { color: var(--neon-cyan); border-color: rgba(0,240,255,.3); box-shadow: var(--glow-cyan); transform: translateY(-2px); }
+    .footer-socials svg { width: 18px; height: 18px; }
+
+    /* ============================================
+       SCROLL REVEAL
+       ============================================ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all .7s cubic-bezier(.2,.9,.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .about-tags { justify-content: center; }
+      .videos-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== BACKGROUND CANVAS ===== -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">
+      <span class="logo-icon">X</span>
+      <span class="logo-text"><span class="highlight">Xenshen</span> Tech</span>
+    </a>
+    <div class="nav-links">
+      <a href="#videos">Videos</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#topics">Topics</a>
+      <a href="https://www.youtube.com/@xenshentech?sub_confirmation=1" target="_blank" class="nav-cta">Subscribe</a>
+    </div>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')" aria-label="Menu">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        New videos every week
+      </div>
+      <h1><span class="gradient">Xenshen Tech</span></h1>
+      <p class="hero-desc">Exploring technology, breaking down complex topics, and building the future — one video at a time. Join the community.</p>
+      <div class="hero-actions">
+        <a href="https://www.youtube.com/@xenshentech?sub_confirmation=1" target="_blank" class="btn btn-primary">
+          <svg fill="currentColor" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.1 31.1 0 0 0 0 12a31.1 31.1 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.1 31.1 0 0 0 24 12a31.1 31.1 0 0 0-.5-5.8zM9.5 15.1l6.3-3.8-6.3-3.8z"/></svg>
+          Watch on YouTube
+        </a>
+        <a href="#about" class="btn btn-outline">Learn More</a>
+      </div>
+
+      <!-- Hero Mockup -->
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <div class="hero-mockup">
+          <div class="mockup-bar">
+            <span class="mockup-dot"></span><span class="mockup-dot"></span><span class="mockup-dot"></span>
+          </div>
+          <div class="mockup-body" id="mockup-content">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section id="stats">
+    <div class="stats reveal">
+      <div class="stat-card">
+        <div class="stat-number" data-count="1000">0</div>
+        <div class="stat-label">Subscribers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="50">0</div>
+        <div class="stat-label">Videos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="100000">0</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="10">0</div>
+        <div class="stat-label">Topics Covered</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED VIDEOS ===== -->
+  <section id="videos">
+    <div class="section-header reveal">
+      <span class="section-label">Featured</span>
+      <h2 class="section-title">Latest Videos</h2>
+      <p class="section-desc">Fresh content exploring the cutting edge of technology, tutorials, and deep-dives.</p>
+    </div>
+
+    <div class="videos-grid" id="videos-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;" class="reveal">
+      <a href="https://www.youtube.com/@xenshentech/videos" target="_blank" class="btn btn-outline">
+        View All Videos
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="section-header reveal">
+      <span class="section-label">About</span>
+      <h2 class="section-title">Who I Am</h2>
+    </div>
+
+    <div class="about-grid reveal">
+      <div class="about-visual">
+        <div class="about-avatar-wrap">
+          <div class="about-avatar">&lt;/&gt;</div>
+        </div>
+      </div>
+      <div class="about-text">
+        <h3>Welcome to Xenshen Tech</h3>
+        <p>This channel is dedicated to making technology accessible and exciting. From coding tutorials and tech reviews to deep-dive explainers — every video is crafted with clarity and passion.</p>
+        <p>Whether you're a seasoned developer, a curious beginner, or just love learning how things work under the hood, there's something here for you.</p>
+        <div class="about-tags">
+          <span class="tag">Coding</span>
+          <span class="tag">Tech Reviews</span>
+          <span class="tag">Tutorials</span>
+          <span class="tag">AI & ML</span>
+          <span class="tag">Open Source</span>
+          <span class="tag">DevOps</span>
+          <span class="tag">Hardware</span>
+          <span class="tag">Gadgets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section id="services">
+    <div class="section-header reveal">
+      <span class="section-label">Services</span>
+      <h2 class="section-title">What I Offer</h2>
+      <p class="section-desc">Professional repair, modification, and modding services for electronics and gaming hardware.</p>
+    </div>
+
+    <div class="services-grid reveal" id="services-grid">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- ===== TOPICS ===== -->
+  <section id="topics">
+    <div class="section-header reveal">
+      <span class="section-label">Topics</span>
+      <h2 class="section-title">What I Cover</h2>
+      <p class="section-desc">A snapshot of the tech world explored on the channel.</p>
+    </div>
+
+    <div class="categories-grid reveal" id="categories-grid">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section" id="subscribe">
+    <div class="cta-box reveal">
+      <h2>Ready to explore the <span class="gradient">future</span> with me?</h2>
+      <p>Join thousands of viewers and never miss a video. Hit subscribe on YouTube!</p>
+      <a href="https://www.youtube.com/@xenshentech?sub_confirmation=1" target="_blank" class="btn btn-primary" style="font-size: 1.05rem; padding: .9rem 2.2rem;">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.1 31.1 0 0 0 0 12a31.1 31.1 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.1 31.1 0 0 0 24 12a31.1 31.1 0 0 0-.5-5.8zM9.5 15.1l6.3-3.8-6.3-3.8z"/></svg>
+        Subscribe Now
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-left">
+      &copy; <span id="year"></span> Xenshen Tech. All rights reserved.
+    </div>
+    <div class="footer-socials">
+      <a href="https://www.youtube.com/@xenshentech" target="_blank" aria-label="YouTube">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.1 31.1 0 0 0 0 12a31.1 31.1 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.1 31.1 0 0 0 24 12a31.1 31.1 0 0 0-.5-5.8zM9.5 15.1l6.3-3.8-6.3-3.8z"/></svg>
+      </a>
+      <a href="#" target="_blank" aria-label="GitHub">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
+      <a href="#" target="_blank" aria-label="Twitter/X">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="#" target="_blank" aria-label="Discord">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.3 18.3 0 0 0-5.487 0 13 13 0 0 0-.617-1.25.078.078 0 0 0-.079-.037A19.7 19.7 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13 13 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10 10 0 0 0 .372-.292.075.075 0 0 1 .077-.016c3.93 1.796 8.18 1.796 12.062 0a.075.075 0 0 1 .078.014c.12.098.246.198.373.293a.077.077 0 0 1-.006.127 12.5 12.5 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.947 2.418-2.157 2.418z"/></svg>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // === Year ===
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // === Navbar scroll effect ===
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // === Background particle canvas ===
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: null, y: null };
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + .5;
+        this.speedX = (Math.random() - .5) * .3;
+        this.speedY = (Math.random() - .5) * .3;
+        this.opacity = Math.random() * .4 + .1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,240,255,${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      const count = Math.min(Math.floor((canvas.width * canvas.height) / 12000), 120);
+      particles = Array.from({ length: count }, () => new Particle());
+    }
+    initParticles();
+    window.addEventListener('resize', initParticles);
+
+    function drawLines() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0,240,255,${.06 * (1 - dist / 140)})`;
+            ctx.lineWidth = .5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawLines();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // === Featured Videos (placeholder) ===
+    const videos = [
+      { title: 'Building a Full-Stack App from Scratch', views: '12K views', date: '2 weeks ago', badge: 'Tutorial' },
+      { title: 'The Future of AI: What to Expect in 2026', views: '8.5K views', date: '1 month ago', badge: 'Deep Dive' },
+      { title: 'Top 10 Developer Tools You Need to Know', views: '15K views', date: '1 month ago', badge: 'List' },
+      { title: 'Understanding WebAssembly in 2026', views: '6.2K views', date: '2 months ago', badge: 'Explainer' },
+      { title: 'Why I Switched to This New Framework', views: '20K views', date: '3 months ago', badge: 'Review' },
+      { title: 'DevOps Basics for Beginners', views: '9.1K views', date: '3 months ago', badge: 'Tutorial' },
+    ];
+
+    const grid = document.getElementById('videos-grid');
+    videos.forEach(v => {
+      grid.innerHTML += `
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="video-thumb-placeholder">
+              <div class="play-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            <span class="video-badge">${v.badge}</span>
+          </div>
+          <div class="video-info">
+            <div class="video-title">${v.title}</div>
+            <div class="video-meta">
+              <span>${v.views}</span><span>&middot;</span><span>${v.date}</span>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    // === Services ===
+    const services = [
+      {
+        icon: '&#x1F528;',
+        name: 'Tech Repair & Modification',
+        desc: 'Professional repair and hardware modification for a wide range of electronics. Whether it’s a faulty component, an upgrade you need, or a custom mod — I diagnose, fix, and optimize.',
+        features: [
+          'Hardware diagnostics & troubleshooting',
+          'Component-level board repair',
+          'RAM / storage upgrades',
+          'Thermal paste & cooling solutions',
+          'Custom hardware modifications',
+          'Performance optimization',
+        ],
+      },
+      {
+        icon: '&#x1F3AE;',
+        name: 'Video Game & Electronic Repair',
+        desc: 'Specialized repair and modding for gaming consoles, handhelds, controllers, and other entertainment electronics. Restore your gear to full glory or mod it for a unique experience.',
+        features: [
+          'Console & handheld repair (switch, PS, Xbox, etc.)',
+          'Controller drift & button fixes',
+          'Joy-con / Stick analog calibration',
+          'Screen & hinge replacements',
+          'Custom controller mods & custom shells',
+          'Save editing & game modification',
+        ],
+      },
+    ];
+
+    const serviceGrid = document.getElementById('services-grid');
+    services.forEach(s => {
+      const featuresHTML = s.features.map(f => `<li>${f}</li>`).join('');
+      serviceGrid.innerHTML += `
+        <div class="service-card">
+          <div class="service-icon-wrap">${s.icon}</div>
+          <div class="service-name">${s.name}</div>
+          <div class="service-desc">${s.desc}</div>
+          <ul class="service-features">${featuresHTML}</ul>
+        </div>`;
+    });
+
+    // === Categories ===
+    const categories = [
+      { icon: '&#x1F4BB;', name: 'Programming', desc: 'Tutorials, tips & deep-dives into code' },
+      { icon: '&#x1F9E0;', name: 'AI & Machine Learning', desc: 'Exploring artificial intelligence together' },
+      { icon: '&#x2699;&#xFE0F;', name: 'DevOps & Infrastructure', desc: 'CI/CD, containers, cloud & more' },
+      { icon: '&#x1F5A5;', name: 'Tech Reviews', desc: 'Honest takes on hardware & software' },
+      { icon: '&#x1F4BE;', name: 'Gadgets & Hardware', desc: 'The latest gear worth your attention' },
+      { icon: '&#x1F680;', name: 'Open Source', desc: 'Projects, contributions & community' },
+      { icon: '&#x1F512;', name: 'Security', desc: 'Cybersecurity basics & advanced tips' },
+      { icon: '&#x2B50;', name: 'Web Development', desc: 'Frontend, backend, APIs & modern stacks' },
+    ];
+
+    const catGrid = document.getElementById('categories-grid');
+    categories.forEach(c => {
+      catGrid.innerHTML += `
+        <div class="cat-card">
+          <span class="cat-icon">${c.icon}</span>
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-desc">${c.desc}</div>
+        </div>`;
+    });
+
+    // === Hero mockup dynamic content ===
+    const mockupContent = document.getElementById('mockup-content');
+    const videoTitles = [
+      'AI Agents Are Changing Everything',
+      'How to Build in Public',
+      'React vs Svelte in 2026',
+      'The State of Web Dev',
+    ];
+    videoTitles.forEach(title => {
+      mockupContent.innerHTML += `
+        <div class="mockup-row">
+          <div class="mockup-avatar"></div>
+          <div class="mockup-lines">
+            <div class="mockup-line" style="width:70%"></div>
+            <div class="mockup-line" style="width:50%"></div>
+          </div>
+        </div>`;
+    });
+
+    // === Stats counter animation ===
+    function animateCounters() {
+      document.querySelectorAll('.stat-number').forEach(el => {
+        const target = +el.dataset.count;
+        const duration = 2000;
+        const start = performance.now();
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(eased * target);
+          el.textContent = current >= 1000 ? (current / 1000).toFixed(current < target ? 1 : 0) + 'K+' : current + '+';
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    // === Scroll reveal ===
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Trigger counter animation for stats
+          if (entry.target.closest('#stats')) animateCounters();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // === Smooth scroll for nav links ===
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+
+    // === Video card click -> YouTube redirect ===
+    document.querySelectorAll('.video-card').forEach(card => {
+      card.addEventListener('click', () => {
+        window.open('https://www.youtube.com/@xenshentech/videos', '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
